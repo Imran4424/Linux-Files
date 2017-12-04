@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include<time.h>
+#include<string.h>
 
 //delay function
 void delay(unsigned int mseconds)
@@ -77,32 +78,61 @@ int main() {
 
 	char server_message[256];
 	char client_response[256];
-	bool write = true;
+	bool write = true,msg = true;
+    int good_bye_count = 0;
     
 
 	
 	//just creating a infinite loop
 
-	while(1)
+	while(good_bye_count != 2)
 	{
-		if(write)
+		while(write)
 		{
-			printf("client waiting for your response\n");
+            if(msg)
+            {
+                printf("client waiting for your response\n");
 
-			scanf ("%[^\n]%*c", server_message);
+                msg = false;
+            }
+
+            //you can type good bye to close the socket			
+
+			scanf ("%[^\n]%*c", server_message); //type finish to finish ur message
 
 			//scanf("%[^\n]s",server_message);
-			
-    	   	int sending = send(client_socket, server_message, sizeof(server_message), 0);
-			
-			if(sending < 0)
-			{
-				perror("In server sending");
-			}
 
-			write = false;
+            if(strcmp(server_message,"finish") == 0)
+            {
+                write = false;
+                msg = true;
+
+                int sending = send(client_socket, server_message, sizeof(server_message), 0);
+                    
+                if(sending < 0)
+                {
+                    perror("In server sending");
+                }
+            }
+    		else
+            {
+                int sending = send(client_socket, server_message, sizeof(server_message), 0);
+                    
+                if(sending < 0)
+                {
+                    perror("In server sending");
+                }
+            }
+        	   
+            if(strcmp(server_message,"good bye") == 0)
+            {
+                good_bye_count++;
+            }
+			
 		}
-		else
+
+
+		while(!write)
 		{
 			
 
@@ -113,10 +143,21 @@ int main() {
 				perror("In server receiving");
 			}
 
-			printf("client: %s\n", client_response);
+            if(strcmp(client_response,"finish") == 0)
+            {
+                write = true;
+            }
+            else
+            {
+                printf("client: %s\n", client_response);
+            }
 
-			write = true;		
 
+            if(strcmp(client_response,"good bye") == 0)
+            {
+                good_bye_count++;
+            }
+			
 		}
 
 	}

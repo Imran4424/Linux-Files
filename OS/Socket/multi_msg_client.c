@@ -36,6 +36,7 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 
 //delay function
@@ -79,33 +80,61 @@ int main() {
 	//declaring variables
 
 	char client_message[256];
-    int msg_size;
 	char server_response[256];
-	int buf_size;
-	bool write = false;
+	bool write = false,msg = true;
+    int good_bye_count = 0;
 
 	//just create a infinity loop
 
-	while(1)
+	while(good_bye_count != 2)
 	{
-		if(write)
+		while(write)
 		{
-            printf("server waiting for your response\n");
-
-            scanf ("%[^\n]%*c", client_message);
-
-			//scanf("%[^\n]s",client_message);
-			
-            int sending = send(client_socket,&client_message,sizeof(client_message),0);
-
-            if(sending < 0)
+            if(msg)
             {
-                perror("sending failed");
+                printf("server waiting for your response\n");
+                msg = false;
             }
 
-            write = false;
-		}		
-		else
+            //you can type good bye to close the socket
+
+            scanf ("%[^\n]%*c", client_message); //type "finish" to finish ur message
+
+
+			//scanf("%[^\n]s",client_message);
+
+            if(strcmp(client_message,"finish") == 0)
+            {
+                write = false;
+                msg = true;
+
+                int sending = send(client_socket,&client_message,sizeof(client_message),0);
+
+                if(sending < 0)
+                {
+                    perror("sending failed");
+                }
+            }
+            else
+            {
+                int sending = send(client_socket,&client_message,sizeof(client_message),0);
+
+                if(sending < 0)
+                {
+                    perror("sending failed");
+                }
+            }
+			
+
+            if(strcmp(client_message,"good bye") == 0)
+            {
+                good_bye_count++;
+            }
+            
+		}
+
+
+		while(!write)
         {
             
             int receiving = recv(client_socket, &server_response, sizeof(server_response), 0);
@@ -115,26 +144,25 @@ int main() {
                 printf("received is failed\n");
             }
 
-            // 3.2. Check sever's response.
-            printf("server: %s\n", server_response);
 
-            write = true;
+            if(strcmp(server_response,"finish") == 0)
+            {
+                write = true;
+            }
+            else
+            {
+                // 3.2. Check sever's response.
+                printf("server: %s\n", server_response);
+
+            }
+
+            if(strcmp(server_response,"good bye") == 0)
+            {
+                good_bye_count++;
+            }
 
         }
 
-
-        /*
-        if(write)
-        {
-            write = false;
-            printf("hi write\n");
-           
-        }
-        else
-        {
-            write = true;
-            printf("hi read\n");
-        }*/
 	
 	}
 
