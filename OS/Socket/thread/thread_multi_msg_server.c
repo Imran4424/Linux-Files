@@ -1,9 +1,9 @@
-/* ==================================================================
-	               ==== Developed By ====
+/* ========================================================
+                   ==== Developed By ====
 
                    SHAH MD. IMRAN HOSSAIN
                       ID - 1510176113
-   ==================================================================
+   ========================================================
 */
 
 #include <sys/socket.h> 	
@@ -60,7 +60,7 @@ int main() {
 		{
             if(msg)
             {
-                printf("client waiting for your response\n");
+                printf("client Anik waiting for your response\n");
 
                 msg = false;
             }

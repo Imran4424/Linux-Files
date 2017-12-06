@@ -35,15 +35,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <stdbool.h>
-#include <time.h>
 
-
-//delay function
-void delay(unsigned int mseconds)
-{
-    clock_t goal = mseconds + clock();
-    while (goal > clock());
-}
 
 
 /* Main function*/

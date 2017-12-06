@@ -1,16 +1,16 @@
-/* ==================================================================
+/* ========================================================
                    ==== Developed By ====
 
                    SHAH MD. IMRAN HOSSAIN
                       ID - 1510176113
-   ==================================================================
+   ========================================================
 */
 
 /* Directives */
-#include <sys/socket.h>		// For system call: socket(). 
-#include <stdio.h>			// For standard input-output.
-#include <netinet/in.h>		// For sockaddr_in, sockaddr, htons().  
-#include <unistd.h>			// For close().  
+#include <sys/socket.h>     // For system call: socket(). 
+#include <stdio.h>          // For standard input-output.
+#include <netinet/in.h>     // For sockaddr_in, sockaddr, htons().  
+#include <unistd.h>         // For close().  
 #include <netdb.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -49,22 +49,46 @@ int main() {
     // 3.1. Receive data from the server
 
 
-	//declaring variables
+    //declaring variables
 
-	char client_message[256];
-	char server_response[256];
-	bool write = false,msg = true;
+    char client_message[256],client_name[50];
+    char server_response[256];
+    bool write = false,msg = true,intro_status = false;
     int good_bye_count = 0;
 
-	//just create a infinity loop
+    //just create a infinity loop
 
-	while(good_bye_count != 2)
-	{
-		while(write)
-		{
+    while(good_bye_count != 2)
+    {
+        //telling the server who am i
+        if(!intro_status)
+        {
+            int receiving = recv(client_socket, &server_response, sizeof(server_response), 0);
+
+            if(receiving < 0)
+            {
+                printf("received is failed\n");
+            }
+
+            printf("server: %s\n",server_response);
+
+            scanf ("%[^\n]%*c", client_name);
+
+            int sending = send(client_socket,&client_name,sizeof(client_name),0);
+
+            if(sending < 0)
+            {
+                perror("sending failed");
+            }
+
+            intro_status = true;
+        }
+
+        while(write)
+        {
             if(msg)
             {
-                printf("server waiting for your response\n");
+                printf("%s,server waiting for your response\n",client_name);
                 msg = false;
             }
 
@@ -73,7 +97,7 @@ int main() {
             scanf ("%[^\n]%*c", client_message); //type "finish" to finish ur message
 
 
-			//scanf("%[^\n]s",client_message);
+            //scanf("%[^\n]s",client_message);
 
             if(strcmp(client_message,"finish") == 0)
             {
@@ -96,17 +120,17 @@ int main() {
                     perror("sending failed");
                 }
             }
-			
+            
 
             if(strcmp(client_message,"good bye") == 0)
             {
                 good_bye_count++;
             }
             
-		}
+        }
 
 
-		while(!write)
+        while(!write)
         {
             
             int receiving = recv(client_socket, &server_response, sizeof(server_response), 0);
@@ -135,8 +159,8 @@ int main() {
 
         }
 
-	
-	}
+    
+    }
 
     
 

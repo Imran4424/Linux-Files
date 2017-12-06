@@ -1,9 +1,9 @@
-/* ==================================================================
-	               ==== Developed By ====
+/* ========================================================
+                   ==== Developed By ====
 
                    SHAH MD. IMRAN HOSSAIN
                       ID - 1510176113
-   ==================================================================
+   ========================================================
 */
 
 #include <sys/socket.h> 	
@@ -47,7 +47,8 @@ int main() {
 
 	char server_message[256];
 	char client_response[256];
-	bool write = true,msg = true;
+	char intro[50],sever_inro_message[] = "introduce youself";
+	bool write = true,msg = true,intro_status= false;
     int good_bye_count = 0;
     
 
@@ -58,9 +59,31 @@ int main() {
 	{
 		while(write)
 		{
+
+			//introduce youself
+			if(!intro_status)
+			{
+				int sending = send(client_socket, sever_inro_message, sizeof(sever_inro_message), 0);
+                    
+                if(sending < 0)
+                {
+                    perror("In server sending");
+                }
+
+                int receiving = recv(client_socket,intro,sizeof(intro),0);
+
+				if(receiving < 0)
+				{
+					perror("In server receiving");
+				}
+
+				intro_status = true;
+			}
+
+
             if(msg)
             {
-                printf("client waiting for your response\n");
+                printf("%s waiting for your response\n",intro);
 
                 msg = false;
             }

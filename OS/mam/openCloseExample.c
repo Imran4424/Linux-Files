@@ -70,7 +70,7 @@
 #include	<unistd.h> 	// for read(), write().
 #include	<string.h>	// for strcpy(), strlen().
 #include	<stdlib.h>	// for exit().
-#include <stdio.h>
+#include    <stdio.h>
 
 #define BUFF_SIZE 1024
 #define MSG_SIZE 80

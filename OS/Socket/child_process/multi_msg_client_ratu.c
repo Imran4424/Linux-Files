@@ -1,9 +1,9 @@
-/* ==================================================================
+/* ========================================================
                    ==== Developed By ====
 
                    SHAH MD. IMRAN HOSSAIN
                       ID - 1510176113
-   ==================================================================
+   ========================================================
 */
 
 /* Directives */
@@ -51,20 +51,44 @@ int main() {
 
 	//declaring variables
 
-	char client_message[256];
+	char client_message[256],client_name[50];
 	char server_response[256];
-	bool write = false,msg = true;
+	bool write = false,msg = true,intro_status = false;
     int good_bye_count = 0;
 
 	//just create a infinity loop
 
 	while(good_bye_count != 2)
 	{
+        //telling the server who am i
+        if(!intro_status)
+        {
+            int receiving = recv(client_socket, &server_response, sizeof(server_response), 0);
+
+            if(receiving < 0)
+            {
+                printf("received is failed\n");
+            }
+
+            printf("server: %s\n",server_response);
+
+            scanf ("%[^\n]%*c", client_name);
+
+            int sending = send(client_socket,&client_name,sizeof(client_name),0);
+
+            if(sending < 0)
+            {
+                perror("sending failed");
+            }
+
+            intro_status = true;
+        }
+
 		while(write)
 		{
             if(msg)
             {
-                printf("server waiting for your response\n");
+                printf("%s,server waiting for your response\n",client_name);
                 msg = false;
             }
 
