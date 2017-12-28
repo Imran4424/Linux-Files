@@ -78,7 +78,7 @@ void case7(){
 		Like variable pointer, we need to cast the return type
 		here. 
 	*/
-   result = (float *) sumVoidVoid(x);
+   	result = (float *) sumVoidVoid(x);
 	printf("Sum of elements of x: %f\n\n", *result);
 }
 
